@@ -21,6 +21,12 @@ export default class Task extends BaseModel {
 
   @column()
   declare project_id: string
+
+  @column.dateTime()
+  declare start_date: DateTime
+
+  @column.dateTime()
+  declare end_date: DateTime
   
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -28,9 +34,9 @@ export default class Task extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {foreignKey: 'user_id', localKey: 'id'})
   declare user: relations.BelongsTo<typeof User>
 
-  @belongsTo(() => Project)
+  @belongsTo(() => Project, {foreignKey: 'project_id', localKey: 'id'})
   declare project: relations.BelongsTo<typeof Project>
 }

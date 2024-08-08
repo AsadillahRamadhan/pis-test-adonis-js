@@ -25,7 +25,7 @@ export default class ProjectsController {
             return response.status(200).json({message: "Data Stored!", data, success: true});
 
         } catch (e){
-            return response.status(400).json({message: e.message, success: false});
+            return response.status(500).json({message: e.message, success: false});
         }
     }
 
@@ -49,7 +49,7 @@ export default class ProjectsController {
             const data = await this.projectService.update(id, name, start_date, end_date);
              return response.status(200).json({message: "Data Updated!", data, success: true});
         } catch (e){
-            return response.status(400).json({message: e.message, success: false});
+            return response.status(500).json({message: e.message, success: false});
         }
     }
 

@@ -8,6 +8,7 @@
 */
 
 import ProjectsController from '#controllers/projects_controller'
+import TasksController from '#controllers/tasks_controller'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 
@@ -25,11 +26,11 @@ router.group(() => {
     }).prefix('project')
 
     router.group(() => {
-      router.get('/', () => {}).as('task.index')
-      router.post('/', () => {}).as('task.store')
-      router.get('/:id', () => {}).as('task.show')
-      router.put('/:id', () => {}).as('task.update')
-      router.delete('/:id', () => {}).as('task.delete')
+      router.get('/', [TasksController, 'index']).as('task.index')
+      router.post('/', [TasksController, 'store']).as('task.store')
+      router.get('/:id', [TasksController, 'show']).as('task.show')
+      router.put('/:id', [TasksController, 'update']).as('task.update')
+      router.delete('/:id', [TasksController, 'delete']).as('task.delete')
     }).prefix('task')
 
     router.group(() => {
