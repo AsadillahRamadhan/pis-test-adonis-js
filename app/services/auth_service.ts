@@ -13,9 +13,7 @@ export default class AuthService {
 
     public async login(data: any, auth: any){
         const user = await this.authRepository.login(data.username);
-        const veri = await hash.verify(user.password, data.password);
-        console.log(veri, user.password, data.password, await hash.make('12345678'))
-        if(!user || !(await hash.verify(user.password.split('$')[4], data.password || ""))){
+        if(!user || !(await hash.verify(user.password, data.password || ""))){
             return null;
         }
 
