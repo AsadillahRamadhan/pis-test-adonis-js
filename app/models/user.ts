@@ -14,6 +14,15 @@ const AuthFinder = withAuthFinder(() => hash.use('bcrypt'), {
 })
 
 export default class User extends compose(BaseModel, AuthFinder) {
+
+  static accessTokens = DbAccessTokensProvider.forModel(User, {
+    expiresIn: '30 days',
+    prefix: 'oat_',
+    table: 'auth_access_tokens',
+    type: 'auth_token',
+    tokenSecretLength: 40,
+  })
+
   @beforeCreate()
   static assignUuid(user: User){
     user.id = randomUUID();
@@ -33,6 +42,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare email: string
 
+  @column()
+  declare role: string
+
   @column({ serializeAs: null })
   declare password: string
 
@@ -45,5 +57,5 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  static accessTokens = DbAccessTokensProvider.forModel(User)
+  // static accessTokens = DbAccessTokensProvider.forModel(User)
 }

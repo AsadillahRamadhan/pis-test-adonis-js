@@ -16,8 +16,7 @@ export default class AuthService {
         if(!user || !(await hash.verify(user.password, data.password || ""))){
             return null;
         }
-
-        const token = await auth.use('api').generate(user)
-        return token.token
+        const token = await this.authRepository.createAccessToken(user);
+        return token
     }
 }
