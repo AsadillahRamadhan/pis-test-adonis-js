@@ -11,7 +11,7 @@ export default class AuthService {
         return this.authRepository.create(data);
     }
 
-    public async login(data: any, auth: any){
+    public async login(data: any){
         const user = await this.authRepository.login(data.username);
         if(!user || !(await hash.verify(user.password, data.password || ""))){
             return null;

@@ -20,7 +20,7 @@ export default class AuthController {
         }
     }
 
-    async login({request, response, auth}: HttpContext){
+    async login({request, response}: HttpContext){
         const data = request.only(['username', 'password']);
 
         if(!data.username || !data.password){
@@ -28,7 +28,7 @@ export default class AuthController {
         }
 
         try {
-            const token = await this.authService.login(data, auth);
+            const token = await this.authService.login(data);
             if(!token){
                 return response.status(404).json({message: "Those credentials doesn't match our records!", success: false});
             }
