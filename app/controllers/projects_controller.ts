@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ProjectsService from "#services/projects_service";
 import { inject } from "@adonisjs/core";
+import { storeProjectValidator, updateProjectValidator } from '#validators/project';
+import { errors } from '@vinejs/vine';
 
 @inject()
 export default class ProjectsController {
@@ -16,15 +18,16 @@ export default class ProjectsController {
 
     async store({request, response}: HttpContext){
         try {
+            await storeProjectValidator.validate(request.body());
             const { name, start_date, end_date } = request.body();
-            if(!name || !start_date || !end_date){
-                return response.status(400).json({message: "Fill all of those data!", success: false});
-            }
 
             const data = await this.projectService.store(name, start_date, end_date);
             return response.status(200).json({message: "Data Stored!", data, success: true});
 
         } catch (e){
+            if (e instanceof errors.E_VALIDATION_ERROR) {
+                return response.status(400).json({message: e.messages, success: false});
+            }
             return response.status(500).json({message: e.message, success: false});
         }
     }
@@ -44,11 +47,15 @@ export default class ProjectsController {
 
     async update({request, response}: HttpContext){
         try {
+            await updateProjectValidator.validate(request.body());
             const id = request.param('id');
             const { name, start_date, end_date } = request.body();
             const data = await this.projectService.update(id, name, start_date, end_date);
              return response.status(200).json({message: "Data Updated!", data, success: true});
         } catch (e){
+            if (e instanceof errors.E_VALIDATION_ERROR) {
+                return response.status(400).json({message: e.messages, success: false});
+            }
             return response.status(500).json({message: e.message, success: false});
         }
     }

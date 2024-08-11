@@ -7,7 +7,7 @@ export default class UsersRepository {
     }
 
     public async store(name: string, username: string, email: string, password: string){
-        const data = await User.create({name, username, email, password});
+        const data = await User.create({name, username, email, password, role: "user"});
         return data;
     }
 

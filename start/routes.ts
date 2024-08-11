@@ -9,14 +9,15 @@
 
 
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 const ProjectsController = async () => await import('#controllers/projects_controller')
 const TasksController = async () => await import('#controllers/tasks_controller')
 const UsersController = async () => await import('#controllers/users_controller')
 const AuthController = async () => await import('#controllers/auth_controller')
 
 router.group(() => {
-  router.post('register', [AuthController, 'register'])
-  router.post('login', [AuthController, 'login'])
+  router.post('register', [AuthController, 'register']).as('register')
+  router.post('login', [AuthController, 'login']).as('login')
 
   router.group(() => {
     router.group(() => {
@@ -43,7 +44,11 @@ router.group(() => {
       router.put('/:id/avatar', [UsersController, 'changeAvatar']).as('user.changeAvatar')
       router.put('/:id/delete-avatar', [UsersController, 'deleteAvatar']).as('user.deleteAvatar')
       router.delete('/:id', [UsersController, 'delete']).as('user.delete')
-    }).prefix('user')
-  })
+    }).prefix('user').middleware(middleware.admin());
+    router.post('logout', [AuthController, 'logout']).as('logout');
+
+    router.put('/change-avatar', [AuthController, 'changeAvatar']).as('change-avatar');
+    router.put('/delete-avatar', [AuthController, 'deleteAvatar']).as('deleteAvatar');
+  }).middleware(middleware.authenticate());
 })
 .prefix('api')

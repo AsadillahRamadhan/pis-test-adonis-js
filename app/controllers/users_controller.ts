@@ -1,6 +1,8 @@
 import UsersService from '#services/users_service';
+import { storeUserValidation } from '#validators/user';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http'
+import { errors } from '@vinejs/vine';
 
 @inject()
 export default class UsersController {
@@ -19,14 +21,15 @@ export default class UsersController {
 
     async store({request, response}: HttpContext){
         try {
+            await storeUserValidation.validate(request.body())
             const { name, username, email, password } = request.body();
 
-            if(!name || !username || !email || !password){
-                return response.status(400).json({message: "Fill all of those data!", success: false});
-            }
             const data = await this.userService.store(name, username, email, password);
             return response.status(201).json({message: "Data created!", data, success: true});
         } catch (e){
+            if (e instanceof errors.E_VALIDATION_ERROR) {
+                return response.status(400).json({message: e.messages, success: false});
+            }
             return response.status(500).json({message: e.message, success: false});
         }
     }
