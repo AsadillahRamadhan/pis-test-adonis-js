@@ -9,6 +9,10 @@ export default class AuthRepository {
     }
 
     public async createAccessToken(user: User){
-        return User.accessTokens.create(user);
+        return User.accessTokens.create(user, ['user']);
+    }
+
+    public async createAdminAccessToken(user: User){
+        return User.accessTokens.create(user, ['admin']);
     }
 }

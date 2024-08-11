@@ -16,7 +16,13 @@ export default class AuthService {
         if(!user || !(await hash.verify(user.password, data.password || ""))){
             return null;
         }
-        const token = await this.authRepository.createAccessToken(user);
+
+        let token;
+        if(user.role == 'admin'){
+            token = await this.authRepository.createAdminAccessToken(user);
+        } else {
+            token = await this.authRepository.createAccessToken(user);
+        }
         return token
     }
 }
