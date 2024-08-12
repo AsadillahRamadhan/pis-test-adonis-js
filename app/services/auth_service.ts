@@ -11,6 +11,7 @@ export default class AuthService {
     constructor(protected authRepository: AuthRepository){}
 
     public async register(data: any){
+        data.role = "user";
         return this.authRepository.create(data);
     }
 
@@ -18,7 +19,8 @@ export default class AuthService {
         const user = await this.authRepository.login(data.username);
         if(!user || !(await hash.verify(user.password, data.password || ""))){
             return null;
-        }
+        } 
+        
 
         let token;
         if(user.role == 'admin'){
